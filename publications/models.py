@@ -13,9 +13,9 @@ class Publication(models.Model):
     """  
     Классы. которые наследуются от models.Model являются моделями - представление таблицы в БД
     """
-    title = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='pubs')
-    text = models.TextField()
+    title = models.CharField(max_length=100, verbose_name='Название')
+    image = models.ImageField(upload_to='pubs', null=True) # null - в БД хранится NULL
+    text = models.TextField(blank=True) # blank - поле становится необязательным к заполнению, в БД хранит пустую строку
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='publications')
     # User.publications.all()
@@ -33,4 +33,10 @@ class Publication(models.Model):
 class Comment(models.Model):
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ['-created_at'] # сортировка по указанным полям, "-" в начале названия означает сортировку по убыванию
